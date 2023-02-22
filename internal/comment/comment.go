@@ -62,3 +62,20 @@ func (s *Service) DeleteComment(ctx context.Context, id string) error {
 func (s *Service) CreateComment(ctx context.Context, cmt Comment) (Comment ,error){
 	return Comment{}, ErrNotImplemented
 }
+
+
+/* 
+Why we are passing ctx context.Context every where ?
+1. ctx helps us to pass information from 1 layer to other 
+ex:
+--> Put into ctx
+ctx = context.WithValue(ctx,"request_id", "unique-string")
+
+-->Get from ctx
+ctx.Value("request_id") // return unique-string
+
+
+2. Passing Time-out using ctx in all layers of applications
+
+
+*/
