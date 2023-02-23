@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"sdivyansh59/GO-REST-API-V2/internal/comment"
 	"sdivyansh59/GO-REST-API-V2/internal/db"
 )
 
@@ -17,12 +18,33 @@ func Run() error {
 		return err
 	}
 
-	if err := db.Ping(context.Background()); err != nil {
+	if err := db.MigrateDB(); err != nil {
+		fmt.Println("failed to migrate database")
 		return err
 	}
-	fmt.Println("successfuly connected and pinged database")
+
+	cmtService := comment.NewService(db)
+
+	cmtService.PostComment(
+		context.Background(),
+		comment.Comment{
+			ID: "605338af-3783-4e80-bfa1-22c23804ae48",
+			Slug: "manual-test",
+			Author: "Elliot",
+			Body: "Hello World",
+		},
+	)
+
+
+	fmt.Println(cmtService.GetComment(
+		context.Background(),
+		"605338af-3783-4e80-bfa1-22c23804ae48",
+	))
+
 	return nil
 }
+
+
 
 func main() {
 	fmt.Println("Go REST Api")

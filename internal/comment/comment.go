@@ -16,14 +16,15 @@ var (
 type Comment struct {
 	ID     string
 	Slug   string
-	Body   string
 	Author string
+	Body   string
 }
 
 // Stroe - this interface define all of the methods 
 //that our service  need in order to operate
 type Store interface {
 	GetComment (context.Context, string) (Comment,error)
+	PostComment (context.Context, Comment) (Comment,error)
 }
 
 // Service - is the struct on which all our
@@ -59,8 +60,12 @@ func (s *Service) DeleteComment(ctx context.Context, id string) error {
 	return ErrNotImplemented
 }
 
-func (s *Service) CreateComment(ctx context.Context, cmt Comment) (Comment ,error){
-	return Comment{}, ErrNotImplemented
+func (s *Service) PostComment(ctx context.Context, cmt Comment) (Comment ,error){
+	insertedCmt, err := s.Store.PostComment(ctx,cmt)
+    if err != nil {
+		return Comment{}, err
+	}	
+	return insertedCmt,nil
 }
 
 
