@@ -23,8 +23,10 @@ type Comment struct {
 // Stroe - this interface define all of the methods 
 //that our service  need in order to operate
 type Store interface {
-	GetComment (context.Context, string) (Comment,error)
-	PostComment (context.Context, Comment) (Comment,error)
+	GetComment(context.Context, string) (Comment,error)
+	PostComment(context.Context, Comment) (Comment,error)
+	UpdateComment(context.Context, string, Comment) (Comment,error)
+	DeleteComment(context.Context, string) (error)
 }
 
 // Service - is the struct on which all our
@@ -52,8 +54,8 @@ func (s *Service) GetComment(ctx context.Context, id string) (Comment, error) {
 }
 
 
-func (s *Service) UpdateComment(ctx context.Context, cmt Comment) error {
-	return ErrNotImplemented
+func (s *Service) UpdateComment(ctx context.Context, id string ,cmt Comment) (Comment,error) {
+	return Comment{},ErrNotImplemented
 }
 
 func (s *Service) DeleteComment(ctx context.Context, id string) error {

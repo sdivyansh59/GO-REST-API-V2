@@ -1,45 +1,36 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"sdivyansh59/GO-REST-API-V2/internal/comment"
 	"sdivyansh59/GO-REST-API-V2/internal/db"
+	transportHttp "sdivyansh59/GO-REST-API-V2/internal/transport/http"
+	//log "github.com/sirupsen/logrus"
 )
+
 
 // Run - is going to be responsible for the
 // instantiation and startup of our go application
 func Run() error {
 	fmt.Println("Starting up our application")
 
-	db, err := db.NewDatabase()
+	store, err := db.NewDatabase()
 	if err != nil {
 		fmt.Println("Failed to connect to the database")
 		return err
 	}
 
-	if err := db.MigrateDB(); err != nil {
+	if err := store.MigrateDB(); err != nil {
 		fmt.Println("failed to migrate database")
 		return err
 	}
 
-	cmtService := comment.NewService(db)
+	cmtService := comment.NewService(store)
 
-	cmtService.PostComment(
-		context.Background(),
-		comment.Comment{
-			ID: "605338af-3783-4e80-bfa1-22c23804ae48",
-			Slug: "manual-test",
-			Author: "Elliot",
-			Body: "Hello World",
-		},
-	)
-
-
-	fmt.Println(cmtService.GetComment(
-		context.Background(),
-		"605338af-3783-4e80-bfa1-22c23804ae48",
-	))
+	httpHandler := transportHttp.NewHandler(cmtService)
+	if err := httpHandler.Serve(); err != nil {
+		return err
+	}
 
 	return nil
 }
